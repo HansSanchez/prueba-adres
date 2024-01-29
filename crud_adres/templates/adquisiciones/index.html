@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="https://static.djangoproject.com/img/icon-touch.e4872c4da341.png" />
+
+    <meta name="theme-color" content="#000000" />
+
+    <title>Prueba técnica Ingeniero de Software - Full stack</title>
+
+    {# Cargamos la librería #}
+    {% load django_bootstrap5  %}
+ 
+    {# CSS Bootstrap #}
+    {% bootstrap_css %} 
+
+    {# Archivos #}
+    {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    
+  </head>
+
+  <body> 
+
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-adres">
+      <div class="container">
+            <a class="navbar-brand" href="https://www.adres.gov.co/">
+              <img src="https://www.adres.gov.co/PublishingImages/Header%20Logos/logo-adres.svg" class="img-fluid"
+              width="70%">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+      </div>
+    </nav>
+    </header>
+
+    <main role="main">
+
+        <div class="container text-center mt-5">
+
+          <div class="row">
+            <div class="col-md-12">
+              <h5>Lista de adquisiciones</h5>              
+            </div>
+          </div>
+
+          <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Adquisiciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Listado</li>
+                </ol>
+            </nav>
+          </div>
+
+          <div class="row mb-5">
+            <div class="col-md-12">
+              <div class="table-responsive">
+
+                {% if messages %}
+                <ul class="messages list-group mb-3">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <div class="row" style="margin-bottom: -10px !important;">
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div align="left" class="btn_crear mb-3">
+                      <a href="store" type="button" class="btn btn-adres">
+                        <i class="fa-solid fa-plus"></i> Nueva adquisición
+                      </a>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <form action="" method="get" class="my-2 my-lg-0">
+                      <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar..." aria-label="Buscar" value="{{ request.GET.search }}">
+                    </form>                  
+                  </div>
+              </div>
+
+                <table class="table table-striped table-hover table-bordered">
+                  <thead class="headerStatic">
+                    <tr>
+                      <th>ID</th>
+                      <th>Presupuesto</th>
+                      <th>Unidad</th>
+                      <th>Tipo</th>
+                      <th>Cantidad</th>
+                      <th>Valor/U</th>
+                      <th>Valor/T</th>
+                      <th>Fecha</th>
+                      <th>Proveedor</th>
+                      <th>Documentación</th>
+                      <th>Estado</th>
+                      <th>Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for acquisition in object_list %}
+                    <tr>
+                      <td>{{ acquisition.id }}</td>
+                      <td class="budget" data-value="{{ acquisition.budget }}">
+                        {{ acquisition.budget }}
+                      </td>
+                      <td>{{ acquisition.administrative_unit }}</td>
+                      <td>{{ acquisition.type_of_goods_or_services }}</td>
+                      <td class="quantity" data-value="{{ acquisition.quantity }}">
+                        {{ acquisition.quantity }}
+                      </td>
+                      <td class="unit-value" data-value="{{ acquisition.unit_value }}">
+                        {{ acquisition.unit_value }}
+                      </td>
+                      <td class="total-value" data-value="{{ acquisition.total_value }}">
+                        {{ acquisition.total_value }}
+                      </td>
+                      <td>{{ acquisition.acquisition_date }}</td>
+                      <td>{{ acquisition.supplier }}</td>
+                      <td>{{ acquisition.documentation }}</td>
+                      <td>
+                        {% if acquisition.disabled_at %}
+                          <span class="badge bg-danger">DESHABILITADO</span>
+                        {% else %}
+                          <span class="badge bg-adres">HABILITADO</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <a href="show/{{ acquisition.id }}" title="Ver" class="btn btn-adres">
+                              <i class="fa-solid fa-eye"></i>
+                          </a>
+                          <a href="update/{{ acquisition.id }}" title="Editar" class="btn btn-warning">
+                              <i class="fa-solid fa-pencil"></i>
+                          </a>
+                          {% if acquisition.disabled_at %}
+                          <form method="POST" action="enable/{{ acquisition.id }}" style="display: inline;">
+                              {% csrf_token %}
+                              <button class="btn btn-bg-adres" 
+                              style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+                              title="Habilitar" onclick="return habilitar();" type="submit">
+                                  <i class="fa-solid fa-check"></i>
+                              </button>
+                          </form>
+                          {% else %}
+                          <form method="POST" action="disable/{{ acquisition.id }}" style="display: inline;">
+                              {% csrf_token %}
+                              <button class="btn btn-danger" 
+                              style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+                              title="Deshabilitar" onclick="return deshabilitar();" type="submit">
+                                  <i class="fa-solid fa-xmark"></i>
+                              </button>
+                          </form>
+                          {% endif %}
+                      </div>
+                      
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>          
+        </div>
+
+    </main>
+
+
+    <footer class="text-muted mt-3 mb-3">
+        <div align="center">
+          Desarrollado por Hans Yadiel Sánchez Mora
+      </div> 
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://kit.fontawesome.com/c6ef26fdf4.js" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+        function deshabilitar() {
+          var x = confirm("¿Está seguro(a) de deshabilitar este registro?");
+          if (x)
+            return true;
+          else
+            return false;
+        }
+
+        function habilitar() {
+          var x = confirm("¿Está seguro(a) de habilitar este registro?");
+          if (x)
+            return true;
+          else
+            return false;
+        }
+
+        function number_format(amonth, decimals) {
+          amonth += ""; // por si pasan un numero en vez de un string
+          amonth = parseFloat(amonth.replace(/[^0-9\.]/g, "")); // elimino cualquier cosa que no sea numero o punto
+          decimals = decimals || 0; // por si la variable no fue fue pasada
+          // si no es un numero o es igual a cero retorno el mismo cero
+          if (isNaN(amonth) || amonth === 0) return parseFloat(0).toFixed(decimals);
+          // si es mayor o menor que cero retorno el valor formateado como numero
+          amonth = "" + amonth.toFixed(decimals);
+          var amonth_parts = amonth.split("."),
+            regexp = /(\d+)(\d{3})/;
+          while (regexp.test(amonth_parts[0]))
+            while (regexp.test(amonth_parts[0]))
+              amonth_parts[0] = amonth_parts[0].replace(regexp, "$1" + "," + "$2");
+          return amonth_parts.join(".");
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+          document.querySelectorAll('.budget').forEach(element => {
+            const value = element.getAttribute('data-value');
+            element.innerText = "$" + number_format(value);
+          });
+
+          document.querySelectorAll('.quantity').forEach(element => {
+            const value = element.getAttribute('data-value');
+            element.innerText = number_format(value);
+          });
+
+          document.querySelectorAll('.unit-value').forEach(element => {
+            const value = element.getAttribute('data-value');
+            element.innerText = "$" + number_format(value);
+          });
+      
+          document.querySelectorAll('.total-value').forEach(element => {
+            const value = element.getAttribute('data-value');
+            element.innerText = "$" + number_format(value);
+          });
+      });
+      
+      </script>
+    
+  </body>
+</html>

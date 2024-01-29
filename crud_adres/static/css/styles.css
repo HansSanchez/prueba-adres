@@ -1,0 +1,59 @@
+.txt_negrita {
+	font-weight: bold!important;
+}
+
+/* 
+body > main > div > div.row.mb-5 > div.card.col-md-2.bg_F5F5F5, body > main > div > div.row.mb-5 > div.card.col-md-2.bg_F5F5F5 > ul > li {
+	background-color: #F5F5F5!important;
+}
+*/ 
+
+body > main > div > div.row.mb-5 > div.col-md-10 > div > div > form > div:nth-child(5) > a {
+	display: none!important;
+}
+
+.ocultar {
+	display: none!important;
+}
+
+.headerStatic {
+    position: -webkit-sticky;
+    position: sticky;
+    top: -1px;
+    z-index: 2;
+    background-color: rgb(40, 53, 86);
+    color: white;
+	font-weight: bolder;
+}
+
+.navbar-adres {
+    background-color: rgb(194, 196, 200);
+    color: white;
+	font-weight: bolder;
+}
+
+.bg-adres {
+    background-color: rgb(18, 212, 175);
+    color: white;
+	font-weight: bolder;
+}
+
+.bg-adres-bold {
+    background: rgb(99, 113, 154) !important;
+    font-weight: bold;
+    color: white;
+}
+
+.btn-adres {
+    color: #fff;
+    background: rgb(99, 113, 154);
+    background-color: rgb(99, 113, 154);
+    border-color: rgb(99, 113, 154);
+}
+
+.btn-bg-adres {
+	color: #fff;
+    background: rgb(18, 212, 175);
+    background-color: rgb(18, 212, 175);
+    border-color: rgb(18, 212, 175);
+}
